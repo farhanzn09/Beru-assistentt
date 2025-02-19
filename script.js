@@ -20,12 +20,15 @@ function getResponse(text) {
     } else if (userText.includes("musik")) {
         responseText = "Baik, tuan. Memutar musik untuk Anda.";
         let yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
-        window.open(yt, "_blank"); // Perbaikan membuka YouTube
+        window.open(yt, "_blank"); 
     } else if (userText.includes("apa kabar")) {
         responseText = "Saya baik, terima kasih sudah bertanya!";
     } else {
         responseText = "Maaf, saya belum mengerti pertanyaan itu.";
     }
+
+    // Nonaktifkan speech recognition sementara
+    recognition.stop(); 
 
     // Gunakan SpeechSynthesis untuk berbicara
     const speech = new SpeechSynthesisUtterance(responseText);
@@ -33,6 +36,12 @@ function getResponse(text) {
     speech.volume = 1;
     speech.rate = 1;
     speech.pitch = 1;
+
+    speech.onend = function () {
+        console.log("Beru selesai berbicara, menghidupkan kembali pengenalan suara...");
+        recognition.start(); // Aktifkan kembali pengenalan suara setelah berbicara selesai
+    };
+
     window.speechSynthesis.speak(speech);
 }
 
@@ -47,7 +56,6 @@ recognition.interimResults = false;
 
 recognition.onresult = function(event) {
     console.log("Recognition berhasil, mendapatkan hasil...");
-
     const transcript = event.results[event.results.length - 1][0].transcript.trim();
     console.log("User: " + transcript); // Debugging
 
@@ -56,12 +64,6 @@ recognition.onresult = function(event) {
 
 recognition.onerror = function(event) {
     console.error("Error dengan mikrofon: ", event.error);
-};
-
-// Perbaikan agar SpeechRecognition selalu restart dengan benar
-recognition.onend = function() {
-    console.log("SpeechRecognition dihentikan, akan direstart setelah 2 detik...");
-    setTimeout(() => recognition.start(), 2000);
 };
 
 // Mulai pengenalan suara
