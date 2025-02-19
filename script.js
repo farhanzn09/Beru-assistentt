@@ -1,37 +1,45 @@
-// Tombol untuk menyalakan SpeechRecognition kembali
-document.body.innerHTML += '<button id="startRecognition" style="position:fixed;bottom:10px;right:10px;padding:10px;background:#007bff;color:white;border:none;border-radius:5px;cursor:pointer;">Nyalakan Beru</button>';
+// Pastikan SpeechRecognition berjalan di browser
+window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+const recognition = new SpeechRecognition();
+recognition.lang = "id-ID";
+recognition.continuous = true;
+recognition.interimResults = false;
 
-document.getElementById("startRecognition").addEventListener("click", function () {
-    recognition.start();
-    console.log("SpeechRecognition dinyalakan kembali.");
-});
+// Status agar tidak merespon berulang-ulang
+let lastUserInput = "";
+let isRecognitionActive = true; // Menyimpan status SpeechRecognition aktif/tidak
 
-// Fungsi utama Beru
 function getResponse(text) {
     let userText = text.toLowerCase().trim();
     let responseText = "";
-    console.log("getResponse dipanggil dengan teks:", text);
 
+    console.log("User mengucapkan:", userText);
+
+    // Cegah respon berulang
     if (userText === lastUserInput) {
         console.log("Input sama seperti sebelumnya, tidak merespon ulang.");
         return;
     }
-    lastUserInput = userText;
+    lastUserInput = userText; // Simpan input terakhir
 
+    // Logika Respon
     if (userText.includes("halo beru")) {
         responseText = "Iya ada apa, tuan?";
     } else if (userText.includes("halo")) {
-        responseText = "Halo tuan, ada yang bisa beru bantu?";
+        responseText = "Halo tuan, ada yang bisa Beru bantu?";
     } else if (userText.includes("beru")) {
         responseText = "Ada apa, tuan?";
     } else if (userText.includes("musik")) {
-        responseText = "Baik, tuan. Memutar musik untuk Anda.";
-        let yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
+        responseText = "Baik tuan.";
         
-        recognition.stop(); // Matikan SpeechRecognition sebelum membuka YouTube
-        console.log("SpeechRecognition dimatikan sementara.");
-
-        window.open(yt, "_blank");
+        // Matikan SpeechRecognition sebelum membuka YouTube
+        recognition.stop();
+        isRecognitionActive = false; // Tandai bahwa recognition mati
+        
+        // Buka YouTube
+        let ytURL = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
+        window.open(ytURL, "_blank");
+        
     } else if (userText.includes("apa kabar")) {
         responseText = "Saya baik, terima kasih sudah bertanya!";
     } else {
@@ -47,22 +55,36 @@ function getResponse(text) {
     window.speechSynthesis.speak(speech);
 }
 
-// Pastikan lastUserInput tetap terjaga untuk mencegah pengulangan
-let lastUserInput = "";
-
-window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-const recognition = new SpeechRecognition();
-recognition.lang = "id-ID";
-recognition.continuous = true;
-recognition.interimResults = false;
-
+// Event ketika mendapatkan suara dari user
 recognition.onresult = function(event) {
-    console.log("Recognition berhasil, mendapatkan hasil...");
     const transcript = event.results[event.results.length - 1][0].transcript.trim();
     console.log("User: " + transcript);
     getResponse(transcript);
 };
 
+// Event jika terjadi error pada microphone
 recognition.onerror = function(event) {
     console.error("Error dengan mikrofon: ", event.error);
 };
+
+// Perbaikan: Jangan otomatis restart SpeechRecognition jika mati karena YouTube
+recognition.onend = function() {
+    if (isRecognitionActive) {
+        console.log("SpeechRecognition dihentikan, akan direstart dalam 2 detik...");
+        setTimeout(() => recognition.start(), 2000);
+    } else {
+        console.log("SpeechRecognition dimatikan sementara karena YouTube berjalan.");
+    }
+};
+
+// **Tombol untuk Menyalakan Ulang SpeechRecognition**
+document.getElementById("startRecognition").addEventListener("click", function () {
+    if (!isRecognitionActive) {
+        isRecognitionActive = true;
+        recognition.start();
+        console.log("SpeechRecognition dinyalakan kembali.");
+    }
+});
+
+// **Jalankan SpeechRecognition saat halaman dimuat**
+recognition.start();
