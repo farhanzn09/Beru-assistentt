@@ -27,10 +27,10 @@ document.getElementById("startRecognition").addEventListener("click", function (
         responseText = "Baik, tuan.";
         let yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
         window.open(yt, "_blank"); 
-    } else if (userText.includes("lagu jj dong beru")) {
+    } else if (userText.includes("jj dong beru")) {
         responseText = "baik tuan, tah jj kuen tuan";
-        let ytjj = "https://www.youtube.com/watch?v=5v30g9FMPrk&ab_channel=DjDepsky";
-        window.open(ytjj, "_blank"); 
+        let yt = "https://www.youtube.com/watch?v=5v30g9FMPrk&ab_channel=DjDepsky";
+        window.open(yt, "_blank"); 
     } else {
         responseText = "Maaf, saya belum mengerti pertanyaan itu.";
     }
