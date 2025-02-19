@@ -11,7 +11,7 @@ function getResponse(text) {
         responseText = "iya ada apa tuan?";
     } else if (userText.includes("halo")) {
         responseText = "Halo tuan , ada yang harus beru bantu";
-    else if (userText.includes("beru")) {
+    }else if (userText.includes("beru")) {
         responseText = "ada apa tuan?";
     } else if (userText.includes("musik")) {
         responseText = "baik tuan";
