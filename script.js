@@ -3,6 +3,12 @@ function getResponse(text) {
     let responseText = "";
     console.log("getResponse dipanggil dengan teks:", text);
 
+document.body.innerHTML += '<button id="startRecognition" style="position:fixed;bottom:10px;right:10px;padding:10px;background:#007bff;color:white;border:none;border-radius:5px;cursor:pointer;">Nyalakan Beru</button>';
+document.getElementById("startRecognition").addEventListener("click", function () {
+    recognition.start();
+    console.log("SpeechRecognition dinyalakan kembali.");
+});
+
     // Cegah pengulangan respon yang sama
     if (userText === lastUserInput) {
         console.log("Input sama seperti sebelumnya, tidak merespon ulang.");
