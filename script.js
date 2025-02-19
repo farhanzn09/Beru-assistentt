@@ -20,15 +20,17 @@ document.getElementById("startRecognition").addEventListener("click", function (
     if (userText.includes("halo beru")) {
         responseText = "Iya ada apa, tuan?";
     } else if (userText.includes("halo")) {
-        responseText = "Halo tuan, ada yang bisa beru bantu?";
+        responseText = "ada apa tuan?";
     } else if (userText.includes("beru")) {
         responseText = "Ada apa, tuan?";
     } else if (userText.includes("musik")) {
-        responseText = "Baik, tuan. Memutar musik untuk Anda.";
+        responseText = "Baik, tuan.";
         let yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
         window.open(yt, "_blank"); 
-    } else if (userText.includes("apa kabar")) {
-        responseText = "Saya baik, terima kasih sudah bertanya!";
+    } else if (userText.includes("musik jj dong beru")) {
+        responseText = "baik tuan, tah jj kuen tuan";
+        let ytjj = "https://www.youtube.com/watch?v=5v30g9FMPrk&ab_channel=DjDepsky";
+        window.open(ytjj, "_blank"); 
     } else {
         responseText = "Maaf, saya belum mengerti pertanyaan itu.";
     }
