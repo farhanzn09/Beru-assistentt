@@ -3,20 +3,24 @@ function getResponse(text) {
     let responseText = "";
     console.log("getResponse dipanggil dengan teks:", text);
 
-
+    // Cegah pengulangan respon yang sama
+    if (userText === lastUserInput) {
+        console.log("Input sama seperti sebelumnya, tidak merespon ulang.");
+        return;
+    }
     lastUserInput = userText; // Simpan input terakhir
 
     // Logika respon
     if (userText.includes("halo beru")) {
-        responseText = "iya ada apa tuan?";
+        responseText = "Iya ada apa, tuan?";
     } else if (userText.includes("halo")) {
-        responseText = "Halo tuan , ada yang harus beru bantu";
-    }else if (userText.includes("beru")) {
-        responseText = "ada apa tuan?";
+        responseText = "Halo tuan, ada yang bisa beru bantu?";
+    } else if (userText.includes("beru")) {
+        responseText = "Ada apa, tuan?";
     } else if (userText.includes("musik")) {
-        responseText = "baik tuan";
-        yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
-        window.open("yt", "_blank");
+        responseText = "Baik, tuan. Memutar musik untuk Anda.";
+        let yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
+        window.open(yt, "_blank"); // Perbaikan membuka YouTube
     } else if (userText.includes("apa kabar")) {
         responseText = "Saya baik, terima kasih sudah bertanya!";
     } else {
@@ -41,32 +45,24 @@ recognition.lang = "id-ID";
 recognition.continuous = true;
 recognition.interimResults = false;
 
-let debounceTimer;
-
 recognition.onresult = function(event) {
     console.log("Recognition berhasil, mendapatkan hasil...");
 
-    clearTimeout(debounceTimer);
     const transcript = event.results[event.results.length - 1][0].transcript.trim();
-
     console.log("User: " + transcript); // Debugging
 
-    debounceTimer = setTimeout(() => {
-        getResponse(transcript);
-    }, 500);
+    getResponse(transcript);
 };
+
 recognition.onerror = function(event) {
     console.error("Error dengan mikrofon: ", event.error);
 };
 
-// Hanya restart jika berhenti secara tidak sengaja
+// Perbaikan agar SpeechRecognition selalu restart dengan benar
 recognition.onend = function() {
     console.log("SpeechRecognition dihentikan, akan direstart setelah 2 detik...");
-    setTimeout(() => {
-        if (!window.speechSynthesis.speaking) { // Hanya restart jika tidak sedang berbicara
-            recognition.start();
-        }
-    }, 2000);
+    setTimeout(() => recognition.start(), 2000);
 };
 
+// Mulai pengenalan suara
 recognition.start();
