@@ -7,10 +7,16 @@ function getResponse(text) {
     lastUserInput = userText; // Simpan input terakhir
 
     // Logika respon
-    if (userText.includes("halo")) {
-        responseText = "Halo! Saya Beru, asisten virtual Anda.";
-    } else if (userText.includes("siapa kamu")) {
-        responseText = "Saya Beru, asisten yang siap membantu Anda!";
+    if (userText.includes("halo beru")) {
+        responseText = "iya ada apa tuan?";
+    } else if (userText.includes("halo")) {
+        responseText = "Halo tuan , ada yang harus beru bantu";
+    else if (userText.includes("beru")) {
+        responseText = "ada apa tuan?";
+    } else if (userText.includes("musik")) {
+        responseText = "baik tuan";
+        yt = "https://www.youtube.com/watch?v=oS1XHcbe4Ig&list=RDoS1XHcbe4Ig&start_radio=1&rv=oS1XHcbe4Ig";
+        window.open("yt", "_blank");
     } else if (userText.includes("apa kabar")) {
         responseText = "Saya baik, terima kasih sudah bertanya!";
     } else {
