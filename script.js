@@ -54,13 +54,30 @@ recognition.lang = "id-ID";
 recognition.continuous = true;
 recognition.interimResults = false;
 
-recognition.onresult = function(event) {
-    console.log("Recognition berhasil, mendapatkan hasil...");
-    const transcript = event.results[event.results.length - 1][0].transcript.trim();
-    console.log("User: " + transcript); // Debugging
+// **FILTER SUARA EKSTERNAL**
+navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const analyser = audioContext.createAnalyser();
+    const microphone = audioContext.createMediaStreamSource(stream);
+    microphone.connect(analyser);
 
-    getResponse(transcript);
-};
+    recognition.onresult = function(event) {
+        console.log("Recognition berhasil, mendapatkan hasil...");
+        const transcript = event.results[event.results.length - 1][0].transcript.trim();
+        console.log("User: " + transcript); // Debugging
+
+        // **CEK SUARA ASLI DARI MIKROFON**
+        let isExternalNoise = analyser.frequencyBinCount < 1000; // Suara eksternal rendah
+        if (!isExternalNoise) {
+            console.log("Mendeteksi suara eksternal, tidak merespon.");
+            return;
+        }
+
+        getResponse(transcript);
+    };
+}).catch((error) => {
+    console.error("Error mendapatkan mikrofon: ", error);
+});
 
 recognition.onerror = function(event) {
     console.error("Error dengan mikrofon: ", event.error);
